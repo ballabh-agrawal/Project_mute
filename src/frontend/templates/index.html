@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Mute - Real-Time Transcript Monitor</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Project Mute - Real-Time Transcript</h1>
+            <div id="status" class="status">🔴 Waiting for connection...</div>
+        </header>
+
+        <main>
+            <div id="captions" class="caption-box">
+                <p class="placeholder">Waiting for captions...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Session ID: <span id="sessionId">-</span> | Duration: <span id="duration">0:00</span></p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.js"></script>
+    <script src="/static/js/ui.js"></script>
+    <script>
+        const socket = io();
+        let startTime = null;
+
+        socket.on("connect", () => {
+            console.log("Connected to server");
+            document.getElementById("status").innerText = "🟢 Connected";
+            startTime = Date.now();
+        });
+
+        socket.on("caption", (data) => {
+            console.log("Caption:", data);
+            displayCaption(data);
+        });
+
+        socket.on("text_message", (data) => {
+            console.log("Message:", data);
+            displayMessage(data);
+        });
+
+        socket.on("welcome", (data) => {
+            console.log("Welcome:", data);
+            document.getElementById("sessionId").innerText = data.session_id;
+        });
+
+        socket.on("session_ended", (data) => {
+            console.log("Session ended:", data);
+            document.getElementById("status").innerText = "⚫ Session ended";
+        });
+
+        socket.on("disconnect", () => {
+            document.getElementById("status").innerText = "🔴 Disconnected";
+        });
+
+        // Update duration every second
+        setInterval(() => {
+            if (startTime) {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                document.getElementById("duration").innerText =
+                    `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+"""Project Mute backend module."""

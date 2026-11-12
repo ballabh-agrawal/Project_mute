@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Mute - Audio Capture Device</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎙️ Project Mute - Audio Capture</h1>
+            <div id="status" class="status">🔴 Not connected</div>
+        </header>
+
+        <main>
+            <section class="setup">
+                <h2>Device Setup</h2>
+                <div class="form-group">
+                    <label for="deviceName">Your Name:</label>
+                    <input type="text" id="deviceName" placeholder="e.g., Alice" value="Speaker A">
+                </div>
+
+                <div class="form-group">
+                    <label for="audioSource">Audio Source:</label>
+                    <select id="audioSource">
+                        <option value="microphone">🎤 Live Microphone</option>
+                        <option value="recorded">📁 Pre-recorded File</option>
+                    </select>
+                </div>
+
+                <input type="file" id="audioFile" accept=".wav,.mp3" style="display:none;">
+            </section>
+
+            <section class="controls">
+                <button id="startBtn" class="btn btn-primary" onclick="startCapture()">▶ Start Capture</button>
+                <button id="stopBtn" class="btn btn-danger" onclick="stopCapture()" disabled>⏹ Stop</button>
+                <button id="resetBtn" class="btn btn-secondary" onclick="resetConnection()">🔄 Reset</button>
+            </section>
+
+            <section class="local-captions">
+                <h2>Local Captions</h2>
+                <div id="localCaptions" class="caption-box">
+                    <p class="placeholder">No captions yet...</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Session: <span id="sessionId">-</span> | Chunks: <span id="chunkCount">0</span></p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.js"></script>
+    <script src="/static/js/socket-client.js"></script>
+    <script src="/static/js/audio-capture.js"></script>
+    <script src="/static/js/ui.js"></script>
+</body>
+</html>
